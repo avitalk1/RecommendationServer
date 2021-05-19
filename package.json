@@ -1,0 +1,29 @@
+{
+  "name": "recommendationserver",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/avitalk1/RecommendationServer.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/avitalk1/RecommendationServer/issues"
+  },
+  "homepage": "https://github.com/avitalk1/RecommendationServer#readme",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.16.0",
+    "aws-sdk": "^2.907.0",
+    "axios": "^0.21.1",
+    "express": "^4.17.1",
+    "node-cron": "^3.0.0",
+    "node-fetch": "^2.6.1",
+    "request": "^2.88.2",
+    "uuid": "^8.3.2"
+  }
+}

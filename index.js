@@ -4,11 +4,11 @@ app = express();
 const port = 3000
 const GetRecommendationFunctions = require('./GetRecommnedationFunctions.js');
 const ValidateRecommendationFunctions = require('./RecommendationValidations');
-cron.schedule('0 8 * * SUN', function() {
+cron.schedule('0 8 * * SUN', async function() {
     GetRecommendationFunctions.mainGetRecommndationFunction()
 });
 
-cron.schedule('0 6 * * SUN', function() {
+cron.schedule('0 6 * * SUN', async function() {
     await ValidateRecommendationFunctions.mainRecommendationsValidation();
 });
 

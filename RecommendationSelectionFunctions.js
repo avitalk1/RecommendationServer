@@ -99,7 +99,6 @@ const chooseUserRecommendationHelp = (possibleRecommendationsArray) => {
 
 
 const createAndSendNotification = async (recommendation, values) => {
-    console.log("Here wee call SendNotificationLambda with value", recommendation, values)
     let params = {
         FunctionName: 'SendNotificationLambda',
         Payload: JSON.stringify({
@@ -107,24 +106,6 @@ const createAndSendNotification = async (recommendation, values) => {
             msg: recommendation.description,
             UserID: values.UserID, 
             notificationType:"recommendation"
-        })
-    }
-    try {
-        const result = await lambda.invoke(params).promise();
-    } catch (err) {
-        console.log("err", err, err.stack)
-    }
-}
-
-const createAndSendNotificationFOR_TESTING = async ( values) => {
-    console.log("Here wee call SendNotificationLambda with value", values)
-    let params = {
-        FunctionName: 'SendNotificationLambda',
-        Payload: JSON.stringify({
-            title: values.title,
-            msg: values.msg,
-            UserID: values.UserID, 
-            notificationType: "action"
         })
     }
     try {
@@ -155,5 +136,4 @@ const addToUserRecommendation = async (recommendation, values) => {
 
 module.exports = {
     mainSelectRecommendationForUser,
-    createAndSendNotificationFOR_TESTING
 };

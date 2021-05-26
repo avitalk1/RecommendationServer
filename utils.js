@@ -31,8 +31,20 @@ const getSeason = async (city) => {
     }
 
 }
-
+const getPrevDatesArray = (numberOfDays) => {
+    let today = new Date();
+    let count = 0;
+    let prevDatesArray = [];
+    while (count != numberOfDays) {
+        let date = new Date(today.setDate(today.getDate() - 1))
+        dateStr = getDateAsString(date)
+        count++;
+        prevDatesArray.push(dateStr)
+    }
+    return prevDatesArray;
+}
 module.exports = {
     getDateAsString, 
-    getSeason
+    getSeason, 
+    getPrevDatesArray
 };

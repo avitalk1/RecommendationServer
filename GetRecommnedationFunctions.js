@@ -2,14 +2,15 @@ let AWS = require('aws-sdk');
 const config = require('./config.js');
 const utils = require('./utils.js');
 AWS.config.update(config.aws_remote_config);
-let ddbDocumentClient = new AWS.DynamoDB.DocumentClient();
-const lambda = new AWS.Lambda();
-const NUM_OF_DAYS = 7
 const selectRecommendationFunctions = require('./RecommendationSelectionFunctions.js')
+let ddbDocumentClient = new AWS.DynamoDB.DocumentClient();
+const NUM_OF_DAYS = 7
 
 const mainGetRecommndationFunction = async () => {
     await scanUserTable();
 }
+
+
 const scanUserTable = async () => {
     const params = {
         TableName: config.user_table_name,
@@ -19,12 +20,11 @@ const scanUserTable = async () => {
         const items = await ddbDocumentClient.scan(params).promise();
         items.Items.forEach((item) => ItemsArray.push(item));
         ifRecommendationMain(ItemsArray)
-
     } catch (err) {
         console.log("err", err)
     }
-
 };
+
 
 const ifRecommendationMain = async (userArr) => {
     for (let i = 0; i < userArr.length; i++) {
@@ -34,11 +34,11 @@ const ifRecommendationMain = async (userArr) => {
             await selectRecommendationFunctions.mainSelectRecommendationForUser(result);
         }
     }
-
 }
 
+
 const ifRecommendationHelp = (user) => {
-    const prevDates = getPrevDatesArray();
+    const prevDates = utils.getPrevDatesArray(NUM_OF_DAYS);
     let today = new Date();
     let count = NUM_OF_DAYS;
     let waterExpensesSum = 0;
@@ -86,20 +86,6 @@ const ifRecommendationHelp = (user) => {
     return false
 }
 
-
-
-const getPrevDatesArray = () => {
-    let today = new Date();
-    let count = 0;
-    let prevDatesArray = [];
-    while (count != NUM_OF_DAYS) {
-        let date = new Date(today.setDate(today.getDate() - 1))
-        dateStr = utils.getDateAsString(date)
-        count++;
-        prevDatesArray.push(dateStr)
-    }
-    return prevDatesArray;
-}
 
 
 module.exports = {

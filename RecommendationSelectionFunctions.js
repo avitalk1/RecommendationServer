@@ -1,15 +1,16 @@
 let AWS = require('aws-sdk');
 const config = require('./config.js');
 const utils = require('./utils.js');
+const { v4: uuidv4 } = require('uuid');
+
 AWS.config.update(config.aws_remote_config);
 let ddbDocumentClient = new AWS.DynamoDB.DocumentClient();
-
 const lambda = new AWS.Lambda();
 
-const { v4: uuidv4 } = require('uuid');
 const mainSelectRecommendationForUser = async (values) => {
     await getUserPastRecommendations(values);
 }
+
 
 const getUserPastRecommendations = async (values) => {
     const params = {
@@ -27,8 +28,8 @@ const getUserPastRecommendations = async (values) => {
     }
 };
 
+
 const getPossibleRecommendations = async (pastRecommendationsArray, values) => {
-    console.log(pastRecommendationsArray)
     const params = {
         TableName: config.recommendation_options_table_name,
         FilterExpression: 'recommendationType = :type',
@@ -74,7 +75,6 @@ const chooseElectricityRecommendation = async (possibleRecommendationsArray, val
     try {
         const items = await ddbDocumentClient.get(params).promise();
         const seasonResult = await utils.getSeason(items.Item.Address.city)
-
         let possibleRecommendations = [];
         possibleRecommendationsArray.forEach((item) => {
             if (item.season == seasonResult || item.season == "none") {
@@ -85,7 +85,6 @@ const chooseElectricityRecommendation = async (possibleRecommendationsArray, val
     } catch (err) {
         console.log("err", err)
     }
-
 }
 
 const chooseUserRecommendationHelp = (possibleRecommendationsArray) => {
@@ -99,7 +98,6 @@ const chooseUserRecommendationHelp = (possibleRecommendationsArray) => {
 }
 
 
-
 const createAndSendNotification = async (recommendation, values) => {
     console.log("Here wee call SendNotificationLambda with value", recommendation, values)
     let params = {
@@ -107,7 +105,8 @@ const createAndSendNotification = async (recommendation, values) => {
         Payload: JSON.stringify({
             title: `You have a new ${values.type} Recommendation`,
             msg: recommendation.description,
-            UserID: values.UserID
+            UserID: values.UserID, 
+            notificationType:"recommendation"
         })
     }
     try {
@@ -116,6 +115,25 @@ const createAndSendNotification = async (recommendation, values) => {
         console.log("err", err, err.stack)
     }
 }
+
+const createAndSendNotificationFOR_TESTING = async ( values) => {
+    console.log("Here wee call SendNotificationLambda with value", values)
+    let params = {
+        FunctionName: 'SendNotificationLambda',
+        Payload: JSON.stringify({
+            title: values.title,
+            msg: values.msg,
+            UserID: values.UserID, 
+            notificationType: "action"
+        })
+    }
+    try {
+        const result = await lambda.invoke(params).promise();
+    } catch (err) {
+        console.log("err", err, err.stack)
+    }
+}
+
 
 const addToUserRecommendation = async (recommendation, values) => {
     let params = {
@@ -130,13 +148,12 @@ const addToUserRecommendation = async (recommendation, values) => {
     }
     try {
         const result = await ddbDocumentClient.put(params).promise()
-        console.log(result)
     } catch (err) {
         console.log("createDeviceItem err", err)
-        return err
     }
 }
 
 module.exports = {
     mainSelectRecommendationForUser,
+    createAndSendNotificationFOR_TESTING
 };

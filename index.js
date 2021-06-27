@@ -15,6 +15,12 @@ cron.schedule('0 6 * * SUN', async () =>  {
 app.get('/', (req, res) => {
     res.send('Hello World!')
   })
+app.get('/checkgetrecommendation', async (req, res) => {
+  await GetRecommendationFunctions.mainGetRecommndationFunction()
+})
+app.get('/checkrecommendation', async (req, res) => {
+  await ValidateRecommendationFunctions.mainRecommendationsValidation();
+})
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
   })

@@ -2,17 +2,18 @@ const axios = require('axios');
 const config = require('./config.js');
 
 const getDateAsString = (date) => {
-    let dateStr = `${date.getFullYear()}-`;
+    let dateStr = '';
+    if (date.getDate() < 10) {
+        dateStr = `0${date.getDate()}-`
+    } else {
+        dateStr = `${date.getDate()}-`
+    }
     if (date.getMonth() + 1 < 10) {
         dateStr = `${dateStr}0${date.getMonth() + 1}-`
     } else {
         dateStr = `${dateStr}${date.getMonth() + 1}-`
     }
-    if (date.getDate() < 10) {
-        dateStr = `${dateStr}0${date.getDate()}`
-    } else {
-        dateStr = `${dateStr}${date.getDate()}`
-    }
+    dateStr = `${dateStr}${date.getFullYear()}`
     return dateStr
 }
 const getSeason = async (city) => {

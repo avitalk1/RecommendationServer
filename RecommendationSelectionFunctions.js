@@ -13,8 +13,6 @@ const mainSelectRecommendationForUser = async (values) => {
 
 
 const getUserPastRecommendations = async (values) => {
-    console.log("hii frommmmmm getUserPastRecommendations")
-
     const params = {
         TableName: config.user_recommendation_table_name,
         FilterExpression: 'UserID = :userID',
@@ -32,7 +30,6 @@ const getUserPastRecommendations = async (values) => {
 
 
 const getPossibleRecommendations = async (pastRecommendationsArray, values) => {
-    console.log("hii frommmmmm posssibblellelelel")
     const params = {
         TableName: config.recommendation_options_table_name,
         FilterExpression: 'recommendationType = :type',
